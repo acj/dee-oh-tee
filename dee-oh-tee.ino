@@ -2,16 +2,17 @@
 
 const int buttonPin = 10;
 
-const int minPanAngle = 700;
-const int maxPanAngle = 2300;
+const int minServoAngle = 700;
+const int maxServoAngle = 2300;
+const int numberOfUsableDegrees = maxServoAngle - minServoAngle;
+const int centerServoAngle = minServoAngle + numberOfUsableDegrees / 2;
 
 Servo panServo;
 Servo tiltServo;
 
-int panAngleDegrees;
-int tiltServoDegrees;
-
 void setup() {
+  Serial.begin(9600);
+  
   pinMode(buttonPin, INPUT_PULLUP);
   
   // 0, 2, 3, 4, 5, 6, 7, 10, 12, 13
@@ -19,19 +20,69 @@ void setup() {
   tiltServo.attach(4);
 }
 
+int convertNormalizedAngleToServoAngle(int normalizedAngle) {
+  return normalizedAngle + minServoAngle;
+}
+
+void drawCircle() {
+  const int maxDisplacementFromCenter = numberOfUsableDegrees / 2;
+  const int tiltAngleCenter = minServoAngle + maxDisplacementFromCenter;
+
+  for (int targetDegrees = 0; targetDegrees <= numberOfUsableDegrees; targetDegrees += 3) {
+    const int targetPanServoDegrees = convertNormalizedAngleToServoAngle(targetDegrees);
+    
+    panServo.writeMicroseconds(targetPanServoDegrees);
+
+    const int targetTiltDegrees = maxDisplacementFromCenter - sqrt(pow(maxDisplacementFromCenter, 2) - pow(targetDegrees - maxDisplacementFromCenter, 2));
+    const int targetTiltServoDegrees = convertNormalizedAngleToServoAngle(targetTiltDegrees);
+    tiltServo.writeMicroseconds(targetTiltServoDegrees);
+
+    Serial.print("tilt angle = ");
+    Serial.print(targetTiltDegrees);
+    Serial.println();
+
+    delay(15);
+  }
+
+  for (int targetDegrees = numberOfUsableDegrees; targetDegrees > 0; targetDegrees -= 3) {
+    const int targetPanServoDegrees = convertNormalizedAngleToServoAngle(targetDegrees);
+    
+    panServo.writeMicroseconds(targetPanServoDegrees);
+
+    const int targetTiltDegrees = maxDisplacementFromCenter + sqrt(pow(maxDisplacementFromCenter, 2) - pow(targetDegrees - maxDisplacementFromCenter, 2));
+    const int targetTiltServoDegrees = convertNormalizedAngleToServoAngle(targetTiltDegrees);
+    tiltServo.writeMicroseconds(targetTiltServoDegrees);
+
+    delay(15);
+  }
+}
+
+void performRangeTest() {
+  const int maxDisplacementFromCenter = numberOfUsableDegrees / 2;
+  
+  for (int targetDegrees = -maxDisplacementFromCenter; targetDegrees <= maxDisplacementFromCenter; targetDegrees += 3) {
+    const int targetServoDegrees = convertNormalizedAngleToServoAngle(targetDegrees);
+    panServo.writeMicroseconds(targetServoDegrees);
+    tiltServo.writeMicroseconds(targetServoDegrees);
+    delay(15);
+  }
+  for (int targetDegrees = maxDisplacementFromCenter; targetDegrees >= -maxDisplacementFromCenter; targetDegrees -= 3) {
+    const int targetServoDegrees = convertNormalizedAngleToServoAngle(targetDegrees);
+    panServo.writeMicroseconds(targetServoDegrees);
+    tiltServo.writeMicroseconds(targetServoDegrees);
+    delay(15);
+  }
+}
+
 void loop() {
-  int buttonState = digitalRead(buttonPin);
+  const int buttonState = digitalRead(buttonPin);
 
   if (buttonState == LOW) {
-    for (panAngleDegrees = minPanAngle; panAngleDegrees <= maxPanAngle; panAngleDegrees += 3) {
-      panServo.writeMicroseconds(panAngleDegrees);
-      tiltServo.writeMicroseconds(panAngleDegrees);
-      delay(15);
-    }
-    for (panAngleDegrees = maxPanAngle; panAngleDegrees >= minPanAngle; panAngleDegrees -= 3) {
-      panServo.writeMicroseconds(panAngleDegrees);
-      tiltServo.writeMicroseconds(panAngleDegrees);
-      delay(15);
-    }
+    const int initialTiltAngle = tiltServo.read();
+    const int initialPanAngle = panServo.read();
+  
+//    performRangeTest();
+
+    drawCircle();
   }
 }
