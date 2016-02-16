@@ -24,37 +24,8 @@ int convertNormalizedAngleToServoAngle(int normalizedAngle) {
   return normalizedAngle + minServoAngle;
 }
 
-void drawCircle() {
-  const int maxDisplacementFromCenter = numberOfUsableDegrees / 2;
-  const int tiltAngleCenter = minServoAngle + maxDisplacementFromCenter;
-
-  for (int targetDegrees = 0; targetDegrees <= numberOfUsableDegrees; targetDegrees += 3) {
-    const int targetPanServoDegrees = convertNormalizedAngleToServoAngle(targetDegrees);
-    
-    panServo.writeMicroseconds(targetPanServoDegrees);
-
-    const int targetTiltDegrees = maxDisplacementFromCenter - sqrt(pow(maxDisplacementFromCenter, 2) - pow(targetDegrees - maxDisplacementFromCenter, 2));
-    const int targetTiltServoDegrees = convertNormalizedAngleToServoAngle(targetTiltDegrees);
-    tiltServo.writeMicroseconds(targetTiltServoDegrees);
-
-    Serial.print("tilt angle = ");
-    Serial.print(targetTiltDegrees);
-    Serial.println();
-
-    delay(15);
-  }
-
-  for (int targetDegrees = numberOfUsableDegrees; targetDegrees > 0; targetDegrees -= 3) {
-    const int targetPanServoDegrees = convertNormalizedAngleToServoAngle(targetDegrees);
-    
-    panServo.writeMicroseconds(targetPanServoDegrees);
-
-    const int targetTiltDegrees = maxDisplacementFromCenter + sqrt(pow(maxDisplacementFromCenter, 2) - pow(targetDegrees - maxDisplacementFromCenter, 2));
-    const int targetTiltServoDegrees = convertNormalizedAngleToServoAngle(targetTiltDegrees);
-    tiltServo.writeMicroseconds(targetTiltServoDegrees);
-
-    delay(15);
-  }
+void drawCircle(int centerX, int centerY, int radius, int xDegreesPerCycle) {
+  drawEllipse(centerX, centerY, radius, radius, xDegreesPerCycle);
 }
 
 void drawEllipse(int centerX, int centerY, int radiusX, int radiusY, int xDegreesPerCycle) {
@@ -112,7 +83,7 @@ void loop() {
   
 //    performRangeTest();
 
-//    drawCircle();
+//    drawCircle(0, 0, numberOfUsableDegrees / 2, 15);
 
     drawEllipse(0, -(numberOfUsableDegrees / 3), numberOfUsableDegrees / 2, numberOfUsableDegrees / 8, 15);
   }
