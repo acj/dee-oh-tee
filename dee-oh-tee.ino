@@ -57,6 +57,35 @@ void drawCircle() {
   }
 }
 
+void drawEllipse(int centerX, int centerY, int radiusX, int radiusY, int xDegreesPerCycle) {
+  const int maxDisplacementFromCenter = numberOfUsableDegrees / 2;
+  const int tiltAngleCenter = minServoAngle + maxDisplacementFromCenter;
+
+  for (int targetDegrees = 0; targetDegrees <= numberOfUsableDegrees; targetDegrees += xDegreesPerCycle) {
+    const int targetPanServoDegrees = convertNormalizedAngleToServoAngle(targetDegrees);
+    
+    panServo.writeMicroseconds(targetPanServoDegrees);
+
+    const int targetTiltDegrees = (maxDisplacementFromCenter + centerY) - sqrt(pow(radiusY, 2) * (1.0 - pow(targetDegrees - maxDisplacementFromCenter - centerX, 2) / pow(radiusX, 2)));
+    const int targetTiltServoDegrees = convertNormalizedAngleToServoAngle(targetTiltDegrees);
+    tiltServo.writeMicroseconds(targetTiltServoDegrees);
+
+    delay(15);
+  }
+
+  for (int targetDegrees = numberOfUsableDegrees; targetDegrees > 0; targetDegrees -= xDegreesPerCycle) {
+    const int targetPanServoDegrees = convertNormalizedAngleToServoAngle(targetDegrees);
+    
+    panServo.writeMicroseconds(targetPanServoDegrees);
+
+    const int targetTiltDegrees = (maxDisplacementFromCenter + centerY ) + sqrt(pow(radiusY, 2) * (1.0 - pow(targetDegrees - maxDisplacementFromCenter - centerX, 2) / pow(radiusX, 2)));
+    const int targetTiltServoDegrees = convertNormalizedAngleToServoAngle(targetTiltDegrees);
+    tiltServo.writeMicroseconds(targetTiltServoDegrees);
+
+    delay(15);
+  }
+}
+
 void performRangeTest() {
   const int maxDisplacementFromCenter = numberOfUsableDegrees / 2;
   
@@ -83,6 +112,8 @@ void loop() {
   
 //    performRangeTest();
 
-    drawCircle();
+//    drawCircle();
+
+    drawEllipse(0, -(numberOfUsableDegrees / 3), numberOfUsableDegrees / 2, numberOfUsableDegrees / 8, 15);
   }
 }
