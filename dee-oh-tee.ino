@@ -101,6 +101,20 @@ void drawEllipse(int centerX, int centerY, int radiusX, int radiusY, int xDegree
   }
 }
 
+void drawRectangle(int startX, int startY, int width, int height, int xDegreesPerCycle) {
+  if (startX + width > USABLE_DEGREES || startY + height > USABLE_DEGREES) {
+    Serial.print("The requested rectangle goes beyond the servo's usable range");
+    Serial.println();
+    return;
+  }
+
+  moveToPoint(startX, startY, xDegreesPerCycle);
+  moveToPoint(startX + width, startY, xDegreesPerCycle);
+  moveToPoint(startX + width, startY + height, xDegreesPerCycle);
+  moveToPoint(startX, startY + height, xDegreesPerCycle);
+  moveToPoint(startX, startY, xDegreesPerCycle);
+}
+
 void performRangeTest() {
   moveToPoint(0, 0, 50);
   moveToPoint(-90, 90, 50);
