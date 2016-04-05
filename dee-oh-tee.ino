@@ -101,6 +101,14 @@ void drawEllipse(int centerX, int centerY, int radiusX, int radiusY, int xDegree
   }
 }
 
+void drawZigZag(int startX, int endX, int yDisplacementFromCenter, int numberOfZigs, int xDegreesPerCycle) {
+  float xDistanceBetweenZigs = (float)(endX - startX) / (float)numberOfZigs;
+  for (int i = 0; i < numberOfZigs; i++) {
+    const int zigSign = (i % 2 == 0) ? 1 : -1;
+    moveToPoint(startX + i * xDistanceBetweenZigs, zigSign * yDisplacementFromCenter, xDegreesPerCycle);
+  }
+}
+
 void drawRectangle(int startX, int startY, int width, int height, int xDegreesPerCycle) {
   if (startX + width > USABLE_DEGREES || startY + height > USABLE_DEGREES) {
     Serial.print("The requested rectangle goes beyond the servo's usable range");
@@ -141,6 +149,8 @@ void loop() {
 //    drawCircle(0, 0, numberOfUsableDegrees / 2, 15, CLOCKWISE);
 
     drawEllipse(0, 0, USABLE_DEGREES / 4, USABLE_DEGREES / 4, 3, CLOCKWISE);
+
+//    drawZigZag(-USABLE_DEGREES / 2, USABLE_DEGREES / 2, USABLE_DEGREES / 4, 20, 15);
 
     disableLaser();
   }
