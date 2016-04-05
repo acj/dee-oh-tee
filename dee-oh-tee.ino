@@ -116,13 +116,9 @@ void drawRectangle(int startX, int startY, int width, int height, int xDegreesPe
 }
 
 void performRangeTest() {
-  moveToPoint(0, 0, 50);
-  moveToPoint(-90, 90, 50);
-  moveToPoint(-90, -90, 50);
-  moveToPoint(90, -90, 50);
-  moveToPoint(90, 90, 50);
-  moveToPoint(-90, 90, 50);
-  moveToPoint(0, 0, 50);
+  moveToPoint(0, 0, 15);
+  drawRectangle(-USABLE_DEGREES / 2, -USABLE_DEGREES / 2, USABLE_DEGREES, USABLE_DEGREES, 15);
+  moveToPoint(0, 0, 15);
 }
 
 // Laser control
