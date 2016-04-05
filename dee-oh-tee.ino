@@ -9,6 +9,9 @@ const int MIN_NORM_DEGREES = -90;
 const int MAX_NORM_DEGREES = 90;
 const int USABLE_DEGREES = MAX_SERVO_DEGREES - MIN_SERVO_DEGREES;
 
+const int CLOCKWISE = 0;
+const int COUNTERCLOCKWISE = 1;
+
 const int SERVO_DELAY = 15; // millis
 
 Servo panServo;
@@ -62,11 +65,12 @@ void moveToPoint(int targetX, int targetY, int numberOfSteps) {
   }
 }
 
-void drawCircle(int centerX, int centerY, int radius, int xDegreesPerCycle) {
-  drawEllipse(centerX, centerY, radius, radius, xDegreesPerCycle);
+void drawCircle(int centerX, int centerY, int radius, int xDegreesPerCycle, int direction) {
+  drawEllipse(centerX, centerY, radius, radius, xDegreesPerCycle, direction);
 }
 
-void drawEllipse(int centerX, int centerY, int radiusX, int radiusY, int xDegreesPerCycle) {
+void drawEllipse(int centerX, int centerY, int radiusX, int radiusY, int xDegreesPerCycle, int direction) {
+  const int directionSign = (direction == 0) ? 1 : -1;
   const int maxDisplacementFromCenter = USABLE_DEGREES / 2;
 
   const int startX = centerX - radiusX;
@@ -77,7 +81,7 @@ void drawEllipse(int centerX, int centerY, int radiusX, int radiusY, int xDegree
     
     panServo.write(targetPanServoDegrees);
 
-    const int targetTiltDegrees = centerY - sqrt(pow(radiusY, 2) * (1.0 - pow(targetDegrees - centerX, 2) / pow(radiusX, 2)));
+    const int targetTiltDegrees = centerY + directionSign * sqrt(pow(radiusY, 2) * (1.0 - pow(targetDegrees - centerX, 2) / pow(radiusX, 2)));
     const int targetTiltServoDegrees = convertNormalizedAngleToServoAngle(targetTiltDegrees);
     tiltServo.write(targetTiltServoDegrees);
 
@@ -89,7 +93,7 @@ void drawEllipse(int centerX, int centerY, int radiusX, int radiusY, int xDegree
     
     panServo.write(targetPanServoDegrees);
 
-    const int targetTiltDegrees = centerY + sqrt(pow(radiusY, 2) * (1.0 - pow(targetDegrees - centerX, 2) / pow(radiusX, 2)));
+    const int targetTiltDegrees = centerY - directionSign * sqrt(pow(radiusY, 2) * (1.0 - pow(targetDegrees - centerX, 2) / pow(radiusX, 2)));
     const int targetTiltServoDegrees = convertNormalizedAngleToServoAngle(targetTiltDegrees);
     tiltServo.write(targetTiltServoDegrees);
 
@@ -124,9 +128,9 @@ void loop() {
 
 //    performRangeTest();
 
-//    drawCircle(0, 0, numberOfUsableDegrees / 2, 15);
+//    drawCircle(0, 0, numberOfUsableDegrees / 2, 15, CLOCKWISE);
 
-    drawEllipse(0, 0, USABLE_DEGREES / 4, USABLE_DEGREES / 4, 3);
+    drawEllipse(0, 0, USABLE_DEGREES / 4, USABLE_DEGREES / 4, 3, CLOCKWISE);
 
     disableLaser();
   }
