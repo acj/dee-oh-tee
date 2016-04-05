@@ -1,3 +1,17 @@
+/**
+ * A simple library for drawing fun shapes with a laser that's attached to a pan/tilt
+ * servo. (Cat not included.)
+ * 
+ * This type of servo works on angles, but I find it easier to think in Cartesian 
+ * coordinates. Most of the functions in this library take x- and y-coordinates. The
+ * origin (center) is at x = 0, y = 0. There are USABLE_DEGREES / 2 units of space
+ * between the origin and the limits of each servo's range in either direction.
+ * 
+ * Have fun!
+ * 
+ * -- Adam Jensen <acjensen at gmail>
+ */
+
 #include <Servo.h>
 
 const int buttonPin = 10;
