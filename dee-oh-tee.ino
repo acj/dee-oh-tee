@@ -123,6 +123,19 @@ void drawZigZag(int startX, int endX, int yDisplacementFromCenter, int numberOfZ
   }
 }
 
+void drawSineWave(int startX, int endX, int yOffset, int amplitude, int numberOfPeriods) {
+  const float lengthOfPeriod = (float)(endX - startX) / numberOfPeriods;
+  const float lengthOfPeriodInRadians = lengthOfPeriod / (2.0 * M_PI);
+
+  for (int x = startX; x < endX; x++) {
+    moveToPoint(x, amplitude * sinf((float)x / lengthOfPeriodInRadians) + yOffset, 1);
+  }
+
+  for (int x = endX; x > startX; x--) {
+    moveToPoint(x, -amplitude * sinf((float)x / lengthOfPeriodInRadians) + yOffset, 1);
+  }
+}
+
 void drawRectangle(int startX, int startY, int width, int height, int xDegreesPerCycle) {
   if (startX + width > USABLE_DEGREES || startY + height > USABLE_DEGREES) {
     Serial.print("The requested rectangle goes beyond the servo's usable range");
@@ -159,6 +172,8 @@ void loop() {
     enableLaser();
 
 //    performRangeTest();
+
+//    drawSineWave(-USABLE_DEGREES / 2, USABLE_DEGREES / 2, USABLE_DEGREES / 4, USABLE_DEGREES / 8, 2);
 
 //    drawCircle(0, 0, numberOfUsableDegrees / 2, 15, CLOCKWISE);
 
