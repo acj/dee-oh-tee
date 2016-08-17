@@ -1,6 +1,9 @@
 /**
- * A simple library for drawing fun shapes with a laser that's attached to a pan/tilt
+ * A simple sketch for drawing fun shapes with a laser that's attached to a pan/tilt
  * servo. (Cat not included.)
+ * 
+ * This sketch is designed for the Trinket microcontroller, which is Arduino-compatible
+ * and made by Adafruit. It should be easily portable to any Arduino platform.
  * 
  * This type of servo works on angles, but I find it easier to think in Cartesian 
  * coordinates. Most of the functions in this library take x- and y-coordinates. The
