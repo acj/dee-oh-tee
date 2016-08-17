@@ -12,10 +12,11 @@
  * -- Adam Jensen <acjensen at gmail>
  */
 
-#include <Servo.h>
+#include "Adafruit_SoftServo.h"
 
-const int buttonPin = 10;
-const int laserPin = 13;
+const int PAN_SERVO_PIN = 0;
+const int TILT_SERVO_PIN = 1;
+const int LASER_PIN = 3;
 
 const int MIN_SERVO_DEGREES = 0;
 const int MAX_SERVO_DEGREES = 180;
@@ -28,17 +29,9 @@ const int COUNTERCLOCKWISE = 1;
 
 const int SERVO_DELAY = 15; // millis
 
+typedef Adafruit_SoftServo Servo;
 Servo panServo;
 Servo tiltServo;
-
-void setup() {
-  pinMode(buttonPin, INPUT_PULLUP);
-  pinMode(laserPin, OUTPUT);
-  
-  // 0, 2, 3, 4, 5, 6, 7, 10, 12, 13
-  panServo.attach(2);
-  tiltServo.attach(4);
-}
 
 int convertNormalizedAngleToServoAngle(int normalizedAngle) {
   return 90 - normalizedAngle;
@@ -154,29 +147,50 @@ void performRangeTest() {
 
 // Laser control
 void enableLaser() {
-  digitalWrite(laserPin, HIGH);
+  digitalWrite(LASER_PIN, HIGH);
 }
 
 void disableLaser() {
-  digitalWrite(laserPin, LOW);
+  digitalWrite(LASER_PIN, LOW);
+}
+
+void setup() {
+  pinMode(LASER_PIN, OUTPUT);
+  
+  panServo.attach(PAN_SERVO_PIN);
+  tiltServo.attach(TILT_SERVO_PIN);
 }
 
 void loop() {
-  const int buttonState = digitalRead(buttonPin);
+  // Set up timer interrupt
+  OCR0A = 0xAF;            // any number is OK
+  TIMSK |= _BV(OCIE0A);    // Turn on the compare interrupt (below!)
 
-  if (buttonState == LOW) {
-    enableLaser();
+  enableLaser();
 
-//    performRangeTest();
+  performRangeTest();
 
-//    drawSineWave(-USABLE_DEGREES / 2, USABLE_DEGREES / 2, USABLE_DEGREES / 4, USABLE_DEGREES / 8, 2);
+//  drawSineWave(-USABLE_DEGREES / 2, USABLE_DEGREES / 2, USABLE_DEGREES / 4, USABLE_DEGREES / 8, 2);
+//
+//  drawCircle(0, 0, numberOfUsableDegrees / 2, 15, CLOCKWISE);
+//
+//  drawEllipse(0, 0, USABLE_DEGREES / 4, USABLE_DEGREES / 4, 3, CLOCKWISE);
+//
+//  drawZigZag(-USABLE_DEGREES / 2, USABLE_DEGREES / 2, USABLE_DEGREES / 4, 20, 15);
 
-//    drawCircle(0, 0, numberOfUsableDegrees / 2, 15, CLOCKWISE);
+  disableLaser();
+}
 
-    drawEllipse(0, 0, USABLE_DEGREES / 4, USABLE_DEGREES / 4, 3, CLOCKWISE);
-
-//    drawZigZag(-USABLE_DEGREES / 2, USABLE_DEGREES / 2, USABLE_DEGREES / 4, 20, 15);
-
-    disableLaser();
+// We'll take advantage of the built in millis() timer that goes off
+// to keep track of time, and refresh the servo every 20 milliseconds
+volatile uint8_t counter = 0;
+SIGNAL(TIMER0_COMPA_vect) {
+  // this gets called every 2 milliseconds
+  counter += 2;
+  // every 20 milliseconds, refresh the servos!
+  if (counter >= 20) {
+    counter = 0;
+    panServo.refresh();
+    tiltServo.refresh();
   }
 }
