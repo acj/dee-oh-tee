@@ -32,8 +32,6 @@ Servo panServo;
 Servo tiltServo;
 
 void setup() {
-  Serial.begin(9600);
-  
   pinMode(buttonPin, INPUT_PULLUP);
   pinMode(laserPin, OUTPUT);
   
@@ -138,8 +136,6 @@ void drawSineWave(int startX, int endX, int yOffset, int amplitude, int numberOf
 
 void drawRectangle(int startX, int startY, int width, int height, int xDegreesPerCycle) {
   if (startX + width > USABLE_DEGREES || startY + height > USABLE_DEGREES) {
-    Serial.print("The requested rectangle goes beyond the servo's usable range");
-    Serial.println();
     return;
   }
 
