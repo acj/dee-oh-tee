@@ -175,7 +175,7 @@ void loop() {
 
 //  drawSineWave(-USABLE_DEGREES / 2, USABLE_DEGREES / 2, USABLE_DEGREES / 4, USABLE_DEGREES / 8, 2);
 //
-//  drawCircle(0, 0, numberOfUsableDegrees / 2, 15, CLOCKWISE);
+//  drawCircle(0, 0, USABLE_DEGREES / 2, 15, CLOCKWISE);
 //
 //  drawEllipse(0, 0, USABLE_DEGREES / 4, USABLE_DEGREES / 4, 3, CLOCKWISE);
 //
