@@ -86,26 +86,16 @@ void drawEllipse(int centerX, int centerY, int radiusX, int radiusY, int xDegree
 
   for (int targetDegrees = startX; targetDegrees <= endX; targetDegrees += xDegreesPerCycle) {
     const int targetPanServoDegrees = convertNormalizedAngleToServoAngle(targetDegrees);
-    
-    panServo.write(targetPanServoDegrees);
-
     const int targetTiltDegrees = centerY + directionSign * sqrt(pow(radiusY, 2) * (1.0 - pow(targetDegrees - centerX, 2) / pow(radiusX, 2)));
-    const int targetTiltServoDegrees = convertNormalizedAngleToServoAngle(targetTiltDegrees);
-    tiltServo.write(targetTiltServoDegrees);
 
-    delay(SERVO_DELAY);
+    moveToPoint(targetDegrees, targetTiltDegrees, xDegreesPerCycle);
   }
 
   for (int targetDegrees = endX; targetDegrees > startX; targetDegrees -= xDegreesPerCycle) {
     const int targetPanServoDegrees = convertNormalizedAngleToServoAngle(targetDegrees);
-    
-    panServo.write(targetPanServoDegrees);
-
     const int targetTiltDegrees = centerY - directionSign * sqrt(pow(radiusY, 2) * (1.0 - pow(targetDegrees - centerX, 2) / pow(radiusX, 2)));
-    const int targetTiltServoDegrees = convertNormalizedAngleToServoAngle(targetTiltDegrees);
-    tiltServo.write(targetTiltServoDegrees);
 
-    delay(SERVO_DELAY);
+    moveToPoint(targetDegrees, targetTiltDegrees, xDegreesPerCycle);
   }
 }
 
