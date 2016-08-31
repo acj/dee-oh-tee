@@ -17,9 +17,9 @@
 
 #include "Adafruit_SoftServo.h"
 
-const int PAN_SERVO_PIN = 0;
-const int TILT_SERVO_PIN = 1;
-const int LASER_PIN = 3;
+const int PAN_SERVO_PIN = 3;
+const int TILT_SERVO_PIN = 4;
+const int LASER_PIN = 0;
 
 const int MIN_SERVO_DEGREES = 0;
 const int MAX_SERVO_DEGREES = 180;
