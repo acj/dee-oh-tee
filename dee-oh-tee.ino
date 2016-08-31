@@ -30,7 +30,7 @@ const int USABLE_DEGREES = MAX_SERVO_DEGREES - MIN_SERVO_DEGREES;
 const int CLOCKWISE = 0;
 const int COUNTERCLOCKWISE = 1;
 
-const int SERVO_DELAY = 15; // millis
+const int SERVO_DELAY = 25; // millis
 
 typedef Adafruit_SoftServo Servo;
 Servo panServo;
